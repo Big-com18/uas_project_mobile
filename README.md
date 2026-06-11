@@ -30,7 +30,7 @@ Buka terminal dan jalankan perintah berikut untuk mengunduh source code:
 git clone https://github.com/username-anda/student_directory_app.git
 ```
 
-> **Catatan:** Ganti URL di atas dengan URL repository GitHub yang sebenarnya.
+> **Catatan:** Ganti URL di atas dengan URL repository GitHub kamu yang sebenarnya.
 
 ### 2. Masuk ke Direktori Proyek
 
