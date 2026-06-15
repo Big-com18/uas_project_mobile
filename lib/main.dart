@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'list_mahasiswa_pages/list_mahasiswa_pages.dart';
+import 'pages/list_mahasiswa_pages.dart';
 
 void main() {
   runApp(const MyApp());

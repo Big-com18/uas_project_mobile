@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../tambah_mahasiswa/tambah_mahasiswa.dart';
+import 'tambah_mahasiswa.dart';
 
 class ListMahasiswaPages extends StatefulWidget {
   const ListMahasiswaPages({super.key});
