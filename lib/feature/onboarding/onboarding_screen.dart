@@ -43,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _onSkipTap() {
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   void _onNextTap() {
@@ -53,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/login');
     }
   }
 

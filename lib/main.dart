@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // ---------- ROUTER ----------
-      initialRoute: '/login',
+      initialRoute: '/onboarding',
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
         '/home': (context) => const MainNavScreen(),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../service/auth_service.dart';
+import '../../main_nav_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
+  String? _emailError;
+  String? _passwordError;
+  final AuthService _authService = AuthService();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -17,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   static const Color _background = Color(0xFF0B0B0F);
   static const Color _fieldBorder = Color(0xFF2A2A30);
   static const Color _hintColor = Color(0xFF6B6B72);
-  static const Color _accentOrange = Color(0xFFD98E4A);
+  static const Color _accentOrange = Color(0xFFFF6900);
 
   @override
   void dispose() {
@@ -83,7 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _emailController,
                   hint: 'Email Address',
                   icon: Icons.mail_outline,
+                  hasError: _emailError != null,
                 ),
+
+                if (_emailError != null) ...[
+                  const SizedBox(height: 8),
+                  _buildErrorMessage(_emailError!),
+                ],
 
                 const SizedBox(height: 16),
 
@@ -93,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hint: 'Password',
                   icon: Icons.lock_outline,
                   obscureText: _obscurePassword,
+                  hasError: _passwordError != null,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
@@ -109,6 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
+                if (_passwordError != null) ...[
+                  const SizedBox(height: 8),
+                  _buildErrorMessage(_passwordError!),
+                ],
+
                 const SizedBox(height: 28),
 
                 // Login button
@@ -116,22 +133,66 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO: handle login
+                      final email = _emailController.text.trim();
+                      final password = _passwordController.text;
+
+                      setState(() {
+                        _emailError = null;
+                        _passwordError = null;
+                      });
+
+                      if (email.isEmpty) {
+                        setState(() {
+                          _emailError = 'Please enter your email address.';
+                        });
+                        return;
+                      }
+
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(email)) {
+                        setState(() {
+                          _emailError = 'Please enter a valid email address.';
+                        });
+                        return;
+                      }
+
+                      if (password.isEmpty) {
+                        setState(() {
+                          _passwordError = 'Please enter your password.';
+                        });
+                        return;
+                      }
+
+                      final user = _authService.login(email, password);
+
+                      if (user != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Selamat datang, ${user.name}!')),
+                        );
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const MainNavScreen()),
+                        );
+                      } else {
+                        setState(() {
+                          _passwordError = 'Incorrect password. Please try again.';
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1C1C22),
-                      foregroundColor: Colors.white70,
+                      backgroundColor: const Color(0xFFFF6900),
+                      foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                        side: const BorderSide(color: _fieldBorder),
                       ),
                     ),
                     child: const Text(
                       'Login',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -212,17 +273,42 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _buildErrorMessage(String message) {
+    return Row(
+      children: [
+        const Icon(
+          Icons.error_outline,
+          color: Colors.redAccent,
+          size: 16,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            message,
+            style: const TextStyle(
+              color: Colors.redAccent,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
     required IconData icon,
     bool obscureText = false,
     Widget? suffixIcon,
+    bool hasError = false,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _fieldBorder),
+        border: Border.all(
+          color: hasError ? Colors.redAccent.withOpacity(0.8) : _fieldBorder,
+        ),
       ),
       child: TextField(
         controller: controller,
@@ -231,7 +317,11 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: _hintColor, fontSize: 15),
-          prefixIcon: Icon(icon, color: _hintColor, size: 20),
+          prefixIcon: Icon(
+            icon,
+            color: hasError ? Colors.redAccent : _hintColor,
+            size: 20,
+          ),
           suffixIcon: suffixIcon,
           border: InputBorder.none,
           contentPadding:
@@ -258,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Text(
           label,
           style: const TextStyle(
-            color: Colors.white70,
+            color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
