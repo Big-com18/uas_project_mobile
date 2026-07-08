@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:uts_project_mobile/data/app_data.dart';
+import 'package:uts_project_mobile/model/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
+  final List<UserModel> _user = userData;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -24,6 +27,21 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _handleLogin() {
+    final email = _user.where((user) => user.email == _emailController.text);
+    final password = _user.where(
+      (user) => user.password == _passwordController.text,
+    );
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid email or password')),
+      );
+    }
   }
 
   @override
@@ -116,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO: handle login
+                      _handleLogin();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1C1C22),
@@ -146,10 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: const Text(
                     'Forgot Password?',
-                    style: TextStyle(
-                      color: _hintColor,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: _hintColor, fontSize: 14),
                   ),
                 ),
 
@@ -158,9 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // OR divider
                 Row(
                   children: [
-                    Expanded(
-                      child: Divider(color: _fieldBorder, thickness: 1),
-                    ),
+                    Expanded(child: Divider(color: _fieldBorder, thickness: 1)),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
@@ -172,9 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Divider(color: _fieldBorder, thickness: 1),
-                    ),
+                    Expanded(child: Divider(color: _fieldBorder, thickness: 1)),
                   ],
                 ),
 
@@ -234,8 +245,10 @@ class _LoginScreenState extends State<LoginScreen> {
           prefixIcon: Icon(icon, color: _hintColor, size: 20),
           suffixIcon: suffixIcon,
           border: InputBorder.none,
-          contentPadding:
-          const EdgeInsets.symmetric(vertical: 18, horizontal: 4),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 18,
+            horizontal: 4,
+          ),
         ),
       ),
     );
