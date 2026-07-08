@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main_nav_screen.dart';
 import 'feature/onboarding/onboarding_screen.dart';
+import 'feature/login/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,10 +23,11 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // ---------- ROUTER ----------
-      initialRoute: '/onboarding',
+      initialRoute: '/login',
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
         '/home': (context) => const MainNavScreen(),
+        '/login': (context) => const LoginScreen(),
       },
     );
   }
