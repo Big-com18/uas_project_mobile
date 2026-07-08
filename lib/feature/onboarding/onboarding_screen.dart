@@ -42,10 +42,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  // Tombol "LEWATI" -> langsung diarahkan ke halaman Register
   void _onSkipTap() {
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/register');
   }
 
+  // Tombol "Lanjut" / "Mulai Sekarang" -> di halaman terakhir diarahkan ke Register
   void _onNextTap() {
     if (_currentPageIndex < _steps.length - 1) {
       _pageController.nextPage(
@@ -53,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/register');
     }
   }
 
