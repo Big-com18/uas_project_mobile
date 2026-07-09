@@ -1,8 +1,6 @@
 import '../model/movie_model.dart';
 
 /// Data dummy sementara sebelum backend jadi.
-/// Nanti tinggal ganti sumber data ini jadi hasil fetch dari API temen kamu,
-/// screen-screen lain gak perlu diubah selama shape-nya (MovieModel) sama.
 final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-001',
@@ -11,10 +9,7 @@ final List<MovieModel> dummyMovies = [
     rating: 4.8,
     genres: ['Sci-Fi', 'Adventure'],
     durationMinutes: 166,
-    synopsis:
-        'Paul Atreides unites with Chani and the Fremen while on a path '
-        'of revenge against the conspirators who destroyed his family, '
-        'as he tries to prevent a terrible future only he can foresee.',
+    synopsis: 'Paul Atreides unites with Chani and the Fremen while on a path of revenge...',
     isNowPlaying: true,
   ),
   const MovieModel(
@@ -24,10 +19,7 @@ final List<MovieModel> dummyMovies = [
     rating: 4.9,
     genres: ['Drama', 'Thriller'],
     durationMinutes: 180,
-    synopsis:
-        'The story of J. Robert Oppenheimer\'s role in the development of '
-        'the atomic bomb during World War II, and the moral weight he '
-        'carried for the rest of his life.',
+    synopsis: 'The story of J. Robert Oppenheimer\'s role in the development of the atomic bomb...',
     isNowPlaying: true,
   ),
   const MovieModel(
@@ -37,10 +29,7 @@ final List<MovieModel> dummyMovies = [
     rating: 4.5,
     genres: ['Action', 'Crime'],
     durationMinutes: 176,
-    synopsis:
-        'When a sadistic serial killer begins murdering key political '
-        'figures in Gotham, Batman is forced to investigate the city\'s '
-        'hidden corruption and question his family\'s involvement.',
+    synopsis: 'When a sadistic serial killer begins murdering key political figures...',
     isNowPlaying: true,
   ),
   const MovieModel(
@@ -50,10 +39,7 @@ final List<MovieModel> dummyMovies = [
     rating: 4.8,
     genres: ['Sci-Fi', 'Adventure', 'Drama'],
     durationMinutes: 169,
-    synopsis:
-        'When Earth becomes uninhabitable in the future, a farmer and '
-        'ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, '
-        'along with a team of researchers, to find a new planet for humans.',
+    synopsis: 'When Earth becomes uninhabitable in the future...',
     isNowPlaying: true,
   ),
   const MovieModel(
@@ -75,6 +61,28 @@ final List<MovieModel> dummyMovies = [
     genres: ['Adventure', 'Drama'],
     durationMinutes: 155,
     synopsis: 'Coming soon.',
+    isNowPlaying: false,
+    isComingSoon: true,
+  ),
+  const MovieModel(
+    id: 'mv-007',
+    title: 'Spider-man: Brand New Day',
+    posterUrl: 'assets/images/img_3.png',
+    rating: 4.6,
+    genres: ['Action', 'Drama'],
+    durationMinutes: 125,
+    synopsis: 'Spider-man faces a new challenge in this brand new era.',
+    isNowPlaying: false,
+    isComingSoon: true,
+  ),
+  const MovieModel(
+    id: 'mv-008',
+    title: 'Obsession',
+    posterUrl: 'assets/images/Obsession.jpg',
+    rating: 4.6,
+    genres: ['Horror'],
+    durationMinutes: 125,
+    synopsis: 'After breaking the mysterious "One Wish Willow" to win his crush.',
     isNowPlaying: false,
     isComingSoon: true,
   ),
