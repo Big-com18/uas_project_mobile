@@ -81,169 +81,184 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: _background,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
+        child: Stack(
           children: [
-            const SizedBox(height: 40),
-
-            // Logo + brand name
-            SvgPicture.asset(
-              'assets/icons/logo.svg',
-              width: 30,
-              height: 30,
-              colorFilter: const ColorFilter.mode(
-                _accentOrange,
-                BlendMode.srcIn,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Center(
-              child: Text(
-                'CINEPHILE ZONE',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 3,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 48),
-
-            const Text(
-              'Welcome Back',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-
-            const SizedBox(height: 36),
-
-            _buildTextField(
-              controller: _emailController,
-              hint: 'Email Address',
-              icon: Icons.mail_outline,
-            ),
-
-            const SizedBox(height: 16),
-
-            _buildTextField(
-              controller: _passwordController,
-              hint: 'Password',
-              icon: Icons.lock_outline,
-              obscureText: _obscurePassword,
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                  color: _hintColor,
-                  size: 20,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              ),
-            ),
-
-            const SizedBox(height: 28),
-
-            // Login button — berubah oranye pas email & password yang lagi
-            // diketik cocok sama salah satu user yang valid.
-            SizedBox(
-              height: 54,
-              child: ElevatedButton(
-                onPressed: _handleLogin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _isValidCredential
-                      ? _primaryOrange
-                      : const Color(0xFF1C1C22),
-                  foregroundColor:
-                      _isValidCredential ? Colors.white : Colors.white70,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                      color:
-                          _isValidCredential ? _primaryOrange : _fieldBorder,
-                    ),
-                  ),
-                ),
-                child: const Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            TextButton(
-              onPressed: () {
-                // TODO: handle forgot password
-              },
-              child: const Text(
-                'Forgot Password?',
-                style: TextStyle(color: _hintColor, fontSize: 14),
-              ),
-            ),
-
-            const SizedBox(height: 56),
-
-            Row(
+            ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
               children: [
-                const Expanded(
-                    child: Divider(color: _fieldBorder, thickness: 1)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                const SizedBox(height: 40),
+    
+                // Logo + brand name
+                SvgPicture.asset(
+                  'assets/icons/logo.svg',
+                  width: 30,
+                  height: 30,
+                  colorFilter: const ColorFilter.mode(
+                    _accentOrange,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Center(
                   child: Text(
-                    'OR',
+                    'CINEPHILE ZONE',
                     style: TextStyle(
-                      color: _hintColor,
-                      fontSize: 12,
-                      letterSpacing: 1,
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 3,
                     ),
                   ),
                 ),
-                const Expanded(
-                    child: Divider(color: _fieldBorder, thickness: 1)),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildSocialButton(
-                    label: 'Google',
+    
+                const SizedBox(height: 48),
+    
+                const Text(
+                  'Welcome Back',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+    
+                const SizedBox(height: 36),
+    
+                _buildTextField(
+                  controller: _emailController,
+                  hint: 'Email Address',
+                  icon: Icons.mail_outline,
+                ),
+    
+                const SizedBox(height: 16),
+    
+                _buildTextField(
+                  controller: _passwordController,
+                  hint: 'Password',
+                  icon: Icons.lock_outline,
+                  obscureText: _obscurePassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: _hintColor,
+                      size: 20,
+                    ),
                     onPressed: () {
-                      // TODO: handle Google sign in
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
                     },
                   ),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: _buildSocialButton(
-                    label: 'Apple',
-                    onPressed: () {
-                      // TODO: handle Apple sign in
-                    },
+    
+                const SizedBox(height: 28),
+    
+                // Login button — berubah oranye pas email & password yang lagi
+                // diketik cocok sama salah satu user yang valid.
+                SizedBox(
+                  height: 54,
+                  child: ElevatedButton(
+                    onPressed: _handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isValidCredential
+                          ? _primaryOrange
+                          : const Color(0xFF1C1C22),
+                      foregroundColor:
+                          _isValidCredential ? Colors.white : Colors.white70,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(
+                          color:
+                              _isValidCredential ? _primaryOrange : _fieldBorder,
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
+    
+                const SizedBox(height: 20),
+    
+                TextButton(
+                  onPressed: () {
+                    // TODO: handle forgot password
+                  },
+                  child: const Text(
+                    'Forgot Password?',
+                    style: TextStyle(color: _hintColor, fontSize: 14),
+                  ),
+                ),
+    
+                const SizedBox(height: 56),
+    
+                Row(
+                  children: [
+                    const Expanded(
+                        child: Divider(color: _fieldBorder, thickness: 1)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        'OR',
+                        style: TextStyle(
+                          color: _hintColor,
+                          fontSize: 12,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                        child: Divider(color: _fieldBorder, thickness: 1)),
+                  ],
+                ),
+    
+                const SizedBox(height: 24),
+    
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildSocialButton(
+                        label: 'Google',
+                        onPressed: () {
+                          // TODO: handle Google sign in
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: _buildSocialButton(
+                        label: 'Apple',
+                        onPressed: () {
+                          // TODO: handle Apple sign in
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+    
+                const SizedBox(height: 40),
               ],
             ),
-
-            const SizedBox(height: 40),
+            // ---------- BACK BUTTON ----------
+            IconButton(
+              padding: const EdgeInsets.all(16.0),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              tooltip: 'Kembali',
+            ),
           ],
         ),
       ),

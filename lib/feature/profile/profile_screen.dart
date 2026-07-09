@@ -6,6 +6,80 @@ import '../../theme/app_text_styles.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  // Fungsi untuk memunculkan pop-up konfirmasi
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.surface, // Menggunakan warna background card dari theme Anda
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: Text(
+            'Konfirmasi Keluar',
+            style: AppTextStyles.h2,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Apakah Anda yakin ingin keluar dari akun ini?',
+                style: AppTextStyles.bodyLarge, // Menyesuaikan dengan typography theme
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  // Tombol Batal
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        side: BorderSide(color: AppColors.textPrimary.withOpacity(0.2)),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Batal',
+                          style: AppTextStyles.bodyLarge.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Tombol Keluar
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.danger,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        Session.logout();
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/welcome', (route) => false);
+                      },
+                      child: Text('Keluar',
+                          style: AppTextStyles.bodyLarge.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+                ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Session.currentUser;
@@ -51,18 +125,13 @@ class ProfileScreen extends StatelessWidget {
               onTap: () {},
             ),
             const SizedBox(height: 12),
+            
+            // Modifikasi pada tombol Logout untuk memanggil _showLogoutConfirmation
             _ProfileMenuTile(
               icon: Icons.logout_rounded,
               label: 'Logout',
               isDanger: true,
-              onTap: () {
-                Session.logout();
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',
-                  (route) => false,
-                );
-              },
+              onTap: () => _showLogoutConfirmation(context), // Memanggil fungsi pop-up di sini
             ),
           ],
         ),
