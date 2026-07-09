@@ -7,7 +7,7 @@ final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-001',
     title: 'Dune: Part Two',
-    posterUrl: 'assets/images/dummy1.jpg',
+    posterUrl: 'assets/images/dune_part2.jpg',
     rating: 4.8,
     genres: ['Sci-Fi', 'Adventure'],
     durationMinutes: 166,
@@ -20,7 +20,7 @@ final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-002',
     title: 'Oppenheimer',
-    posterUrl: 'assets/images/dummy2.jpg',
+    posterUrl: 'assets/images/dummy3.jpg',
     rating: 4.9,
     genres: ['Drama', 'Thriller'],
     durationMinutes: 180,
@@ -33,7 +33,7 @@ final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-003',
     title: 'The Batman',
-    posterUrl: 'assets/images/dummy3.jpg',
+    posterUrl: 'assets/images/batman.jpg',
     rating: 4.5,
     genres: ['Action', 'Crime'],
     durationMinutes: 176,
@@ -46,7 +46,7 @@ final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-004',
     title: 'Interstellar',
-    posterUrl: 'assets/images/dummy4.jpg',
+    posterUrl: 'assets/images/img.png',
     rating: 4.8,
     genres: ['Sci-Fi', 'Adventure', 'Drama'],
     durationMinutes: 169,
@@ -59,7 +59,7 @@ final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-005',
     title: 'Mad Max: Wasteland',
-    posterUrl: 'assets/images/dummy5.jpg',
+    posterUrl: 'assets/images/img_1.png',
     rating: 0,
     genres: ['Action', 'Adventure'],
     durationMinutes: 148,
@@ -70,7 +70,7 @@ final List<MovieModel> dummyMovies = [
   const MovieModel(
     id: 'mv-006',
     title: 'Horizon',
-    posterUrl: 'assets/images/dummy1.jpg',
+    posterUrl: 'assets/images/img_2.png',
     rating: 0,
     genres: ['Adventure', 'Drama'],
     durationMinutes: 155,
