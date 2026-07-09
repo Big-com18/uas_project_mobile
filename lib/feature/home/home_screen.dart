@@ -1,36 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../data/session.dart';
+import '../../data/dummy_movies.dart';
+import '../../model/movie_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  // ---------- DUMMY DATA ----------
-  // Pakai file dummy1.jpg - dummy5.jpg dari assets/images/
-  // Ganti title/genre/rating sesuai film aslinya nanti.
-  static const List<Map<String, String>> _nowPlaying = [
-    {
-      'title': 'Dune: Part Two',
-      'genre': 'Sci-Fi',
-      'duration': '2h 46m',
-      'rating': '4.8',
-      'imageAsset': 'assets/images/dummy1.jpg',
-    },
-    {
-      'title': 'Dune: Part One',
-      'genre': 'Sci-Fi',
-      'duration': '2h 46m',
-      'rating': '4.8',
-      'imageAsset': 'assets/images/dummy2.jpg',
-    },
-  ];
-
-  static const List<Map<String, String>> _comingSoon = [
-    {'title': 'Interstellar', 'imageAsset': 'assets/images/dummy3.jpg'},
-    {'title': 'Spectre', 'imageAsset': 'assets/images/dummy4.jpg'},
-    {'title': 'Mad Max', 'imageAsset': 'assets/images/dummy5.jpg'},
-  ];
 
   // Ambil nama user yang lagi login dari Session.
   // Kalau entah kenapa gak ada (misal langsung buka /home tanpa login),
@@ -48,6 +22,13 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // FIX: sebelumnya home_screen pakai data dummy Map<String,String> lokal
+    // yang gak punya id, jadi kartunya gak bisa di-tap sama sekali (gak ada
+    // GestureDetector-nya juga). Sekarang pakai dummyMovies (MovieModel asli,
+    // punya `id`) biar bisa navigasi ke MovieDetailScreen yang bener.
+    final nowPlaying = dummyMovies.where((m) => m.isNowPlaying).toList();
+    final comingSoon = dummyMovies.where((m) => m.isComingSoon).toList();
+
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -81,23 +62,13 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
                     color: Color(0xFF1C1C28),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white10, width: 0.8),
                   ),
-                  padding: EdgeInsets.all(10),
-                  child: SvgPicture.asset(
-                    "assets/icons/search.svg",
-                    width: 24,
-                    height: 24,
-                    colorFilter: ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
+                  child: const Icon(Icons.search, color: Colors.white, size: 20),
                 ),
               ],
             ),
@@ -117,17 +88,11 @@ class HomeScreen extends StatelessWidget {
               height: 260,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: _nowPlaying.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 14),
+                itemCount: nowPlaying.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 14),
                 itemBuilder: (context, index) {
-                  final movie = _nowPlaying[index];
-                  return _NowPlayingCard(
-                    title: movie['title']!,
-                    genre: movie['genre']!,
-                    duration: movie['duration']!,
-                    rating: movie['rating']!,
-                    imageAsset: movie['imageAsset']!,
-                  );
+                  final movie = nowPlaying[index];
+                  return _NowPlayingCard(movie: movie);
                 },
               ),
             ),
@@ -147,14 +112,11 @@ class HomeScreen extends StatelessWidget {
               height: 130,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: _comingSoon.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 12),
+                itemCount: comingSoon.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
-                  final movie = _comingSoon[index];
-                  return _ComingSoonCard(
-                    title: movie['title']!,
-                    imageAsset: movie['imageAsset']!,
-                  );
+                  final movie = comingSoon[index];
+                  return _ComingSoonCard(movie: movie);
                 },
               ),
             ),
@@ -168,93 +130,92 @@ class HomeScreen extends StatelessWidget {
 
 // ---------- WIDGET CARD NOW PLAYING ----------
 class _NowPlayingCard extends StatelessWidget {
-  final String title;
-  final String genre;
-  final String duration;
-  final String rating;
-  final String imageAsset;
+  final MovieModel movie;
 
-  const _NowPlayingCard({
-    required this.title,
-    required this.genre,
-    required this.duration,
-    required this.rating,
-    required this.imageAsset,
-  });
+  const _NowPlayingCard({required this.movie});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 170,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1C1C28),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            imageAsset,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => _placeholder(),
-          ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/movie-detail',
+          arguments: movie.id,
+        );
+      },
+      child: Container(
+        width: 170,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1C1C28),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              movie.posterUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => _placeholder(),
+            ),
 
-          // gradient overlay biar teks kebaca
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.85),
+            // gradient overlay biar teks kebaca
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.85),
+                  ],
+                ),
+              ),
+            ),
+
+            // konten teks
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: Colors.orange, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${movie.rating}',
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    movie.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${movie.genres.join(', ')} • ${movie.durationLabel}',
+                    style: TextStyle(color: Colors.grey[300], fontSize: 11),
+                  ),
                 ],
               ),
             ),
-          ),
-
-          // konten teks
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.orange, size: 14),
-                    const SizedBox(width: 4),
-                    Text(
-                      rating,
-                      style: const TextStyle(
-                        color: Colors.orange,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '$genre • $duration',
-                  style: TextStyle(color: Colors.grey[300], fontSize: 11),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -263,37 +224,42 @@ class _NowPlayingCard extends StatelessWidget {
     return Container(
       color: const Color(0xFF1C1C28),
       alignment: Alignment.center,
-      child: const Icon(
-        Icons.movie_creation_outlined,
-        color: Colors.white24,
-        size: 42,
-      ),
+      child: const Icon(Icons.movie_creation_outlined,
+          color: Colors.white24, size: 42),
     );
   }
 }
 
 // ---------- WIDGET CARD COMING SOON ----------
 class _ComingSoonCard extends StatelessWidget {
-  final String title;
-  final String imageAsset;
+  final MovieModel movie;
 
-  const _ComingSoonCard({required this.title, required this.imageAsset});
+  const _ComingSoonCard({required this.movie});
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: 110,
-        height: 130,
-        color: const Color(0xFF1C1C28),
-        child: Image.asset(
-          imageAsset,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => const Icon(
-            Icons.movie_creation_outlined,
-            color: Colors.white24,
-            size: 32,
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/movie-detail',
+          arguments: movie.id,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: 110,
+          height: 130,
+          color: const Color(0xFF1C1C28),
+          child: Image.asset(
+            movie.posterUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => const Icon(
+              Icons.movie_creation_outlined,
+              color: Colors.white24,
+              size: 32,
+            ),
           ),
         ),
       ),
