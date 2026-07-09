@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // Tombol "LEWATI" -> langsung diarahkan ke halaman Register
   void _onSkipTap() {
-    Navigator.pushReplacementNamed(context, '/register');
+    Navigator.pushReplacementNamed(context, '/welcome');
   }
 
   // Tombol "Lanjut" / "Mulai Sekarang" -> di halaman terakhir diarahkan ke Register
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/register');
+      Navigator.pushReplacementNamed(context, '/welcome');
     }
   }
 

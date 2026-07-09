@@ -14,6 +14,7 @@ import 'feature/order/order_summary_screen.dart';
 import 'feature/order/payment_success_screen.dart';
 import 'feature/ticket/my_ticket_screen.dart';
 import 'feature/ticket/e_ticket_screen.dart';
+import 'feature/welcome/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/my-ticket': (context) => const MyTicketScreen(),
+        '/welcome': (context) => const WelcomeScreen(),
       },
 
       // Route yang BUTUH data (movieId, cinemaId, OrderModel, TicketModel)
