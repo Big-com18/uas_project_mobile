@@ -27,7 +27,7 @@ TicketModel ticketFromOrder(OrderModel order) {
 final List<TicketModel> dummyTickets = [
   TicketModel(
     id: 'TKT-892481-X',
-    movieTitle: 'Dune: Part Two',
+    movieTitle: 'John Wick',
     posterUrl: 'assets/images/dummy1.jpg',
     cinemaName: 'CGV Grand Indonesia',
     studio: 'Studio 1',
