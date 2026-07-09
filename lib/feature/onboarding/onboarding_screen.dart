@@ -8,9 +8,13 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPageIndex = 0;
+
+  late final AnimationController _animationController;
+  late final Animation<double> _floatAnimation;
 
   final List<_OnboardingStep> _steps = const [
     _OnboardingStep(
@@ -37,8 +41,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+
+    _floatAnimation = Tween<double>(begin: -10, end: 10).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+
+    _animationController.repeat(reverse: true);
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -112,14 +131,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(height: 0),
-                      SizedBox(
-                        height: 200,
-                        child: Center(
-                          child: SvgPicture.asset(
-                            step.svgAsset,
-                            height: step.svgHeight,
-                            fit: BoxFit.contain,
+                      const SizedBox(height: 0),
+                      AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, _floatAnimation.value),
+                            child: child,
+                          );
+                        },
+                        child: SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              step.svgAsset,
+                              height: step.svgHeight,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
