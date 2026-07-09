@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uts_project_mobile/data/app_data.dart';
 import 'package:uts_project_mobile/data/session.dart';
 import 'package:uts_project_mobile/model/user.dart';
+import '../../data/auth_shared_prefs.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -52,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onCredentialsChanged() => setState(() {});
 
-  void _handleLogin() {
+  void _handleLogin() async {
     // Email DAN password harus cocok di user yang SAMA (bukan dicek terpisah).
     final matchedUsers = _user.where(
       (user) =>
@@ -61,7 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (matchedUsers.isNotEmpty) {
-      Session.login(matchedUsers.first);
+      final user = matchedUsers.first;
+      Session.login(user);
+      
+      // Simpan status login & email secara persisten ke SharedPreferences
+      await AuthSharedPrefs.setLoggedIn(true, email: user.email);
+
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

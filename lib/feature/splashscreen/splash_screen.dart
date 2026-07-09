@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../data/auth_shared_prefs.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,13 +18,21 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNextScreen() async {
+    // Jalankan pengecekan SharedPreferences secara paralel dengan delay
+    final isFirstTimeFuture = AuthSharedPrefs.isFirstTime();
+
     // Memberikan jeda waktu 3 detik agar animasi loading bar selesai
     await Future.delayed(const Duration(seconds: 3));
 
+    final isFirstTime = await isFirstTimeFuture;
+
     if (!mounted) return;
 
-    // Arahkan ke halaman Onboarding (Sesuaikan route jika Anda menggunakan Get Started)
-    Navigator.pushReplacementNamed(context, '/onboarding'); 
+    if (isFirstTime) {
+      Navigator.pushReplacementNamed(context, '/onboarding'); 
+    } else {
+      Navigator.pushReplacementNamed(context, '/welcome');
+    }
   }
 
   @override

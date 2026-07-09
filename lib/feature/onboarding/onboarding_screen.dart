@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../data/auth_shared_prefs.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -49,7 +51,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
 
     _floatAnimation = Tween<double>(begin: -10, end: 10).animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     _animationController.repeat(reverse: true);
   }
@@ -61,18 +64,34 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     super.dispose();
   }
 
-  // Tombol "LEWATI" -> langsung diarahkan ke halaman Register
+  // Tombol "LEWATI" -> tandai onboarding selesai, arahkan berdasarkan status login
   void _onSkipTap() {
-    Navigator.pushReplacementNamed(context, '/welcome');
+    _completeOnboarding();
   }
 
-  // Tombol "Lanjut" / "Mulai Sekarang" -> di halaman terakhir diarahkan ke Register
+  // Tombol "Lanjut" / "Mulai Sekarang" -> di halaman terakhir tandai onboarding selesai
   void _onNextTap() {
     if (_currentPageIndex < _steps.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+    } else {
+      _completeOnboarding();
+    }
+  }
+
+  Future<void> _completeOnboarding() async {
+    // Simpan status bahwa user sudah melewati onboarding
+    await AuthSharedPrefs.setFirstTime(false);
+
+    // Cek status login
+    final isLoggedIn = await AuthSharedPrefs.isLoggedIn();
+
+    if (!mounted) return;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       Navigator.pushReplacementNamed(context, '/welcome');
     }

@@ -3,6 +3,7 @@ import '../../data/session.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import 'edit_profile_screen.dart';
+import '../../data/auth_shared_prefs.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -66,10 +67,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         elevation: 0,
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        final navigator = Navigator.of(context);
                         Session.logout();
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/welcome', (route) => false);
+                        await AuthSharedPrefs.clearSession();
+                        navigator.pushNamedAndRemoveUntil(
+                            '/welcome', (route) => false);
                       },
                       child: Text('Keluar',
                           style: AppTextStyles.bodyLarge.copyWith(
