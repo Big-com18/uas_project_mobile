@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import '../../data/session.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import 'edit_profile_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   // Fungsi untuk memunculkan pop-up konfirmasi
   void _showLogoutConfirmation(BuildContext context) {
     showDialog(
@@ -117,7 +123,14 @@ class ProfileScreen extends StatelessWidget {
             _ProfileMenuTile(
               icon: Icons.edit_outlined,
               label: 'Edit Profile',
-              onTap: () {},
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                );
+                // Jika halaman edit mengembalikan `true`, refresh UI
+                if (result == true) setState(() {});
+              },
             ),
             _ProfileMenuTile(
               icon: Icons.settings_outlined,

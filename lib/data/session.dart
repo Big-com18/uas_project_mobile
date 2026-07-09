@@ -1,4 +1,5 @@
 import '../model/user.dart';
+import 'app_data.dart';
 
 /// Penyimpanan sederhana buat data user yang lagi login.
 ///
@@ -21,4 +22,24 @@ class Session {
   static void logout() => currentUser = null;
 
   static bool get isLoggedIn => currentUser != null;
+
+  static void updateUser({String? name, String? phone, String? password}) {
+    if (currentUser != null) {
+      // 1. Perbarui objek currentUser di sesi saat ini
+      currentUser = currentUser!.copyWith(
+        name: name,
+        phone: phone,
+        password: password,
+      );
+
+      // 2. Cari indeks pengguna di dalam list `userData` berdasarkan email
+      final userIndex =
+          userData.indexWhere((user) => user.email == currentUser!.email);
+
+      // 3. Jika ditemukan, timpa data lama dengan data yang sudah diperbarui
+      if (userIndex != -1) {
+        userData[userIndex] = currentUser!;
+      }
+    }
+  }
 }
