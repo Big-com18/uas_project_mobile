@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../data/auth_shared_prefs.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -8,9 +10,13 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPageIndex = 0;
+
+  late final AnimationController _animationController;
+  late final Animation<double> _floatAnimation;
 
   final List<_OnboardingStep> _steps = const [
     _OnboardingStep(
@@ -37,17 +43,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+
+    _floatAnimation = Tween<double>(begin: -10, end: 10).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _animationController.repeat(reverse: true);
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
-  // Tombol "LEWATI" -> langsung diarahkan ke halaman Register
+  // Tombol "LEWATI" -> tandai onboarding selesai, arahkan berdasarkan status login
   void _onSkipTap() {
-    Navigator.pushReplacementNamed(context, '/register');
+    _completeOnboarding();
   }
 
-  // Tombol "Lanjut" / "Mulai Sekarang" -> di halaman terakhir diarahkan ke Register
+  // Tombol "Lanjut" / "Mulai Sekarang" -> di halaman terakhir tandai onboarding selesai
   void _onNextTap() {
     if (_currentPageIndex < _steps.length - 1) {
       _pageController.nextPage(
@@ -55,7 +77,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/register');
+      _completeOnboarding();
+    }
+  }
+
+  Future<void> _completeOnboarding() async {
+    // Simpan status bahwa user sudah melewati onboarding
+    await AuthSharedPrefs.setFirstTime(false);
+
+    // Cek status login
+    final isLoggedIn = await AuthSharedPrefs.isLoggedIn();
+
+    if (!mounted) return;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      Navigator.pushReplacementNamed(context, '/welcome');
     }
   }
 
@@ -112,14 +150,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(height: 0),
-                      SizedBox(
-                        height: 200,
-                        child: Center(
-                          child: SvgPicture.asset(
-                            step.svgAsset,
-                            height: step.svgHeight,
-                            fit: BoxFit.contain,
+                      const SizedBox(height: 0),
+                      AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, _floatAnimation.value),
+                            child: child,
+                          );
+                        },
+                        child: SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              step.svgAsset,
+                              height: step.svgHeight,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),

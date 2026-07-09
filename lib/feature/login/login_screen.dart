@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uts_project_mobile/data/app_data.dart';
+import 'package:uts_project_mobile/data/session.dart';
 import 'package:uts_project_mobile/model/user.dart';
+import '../../data/auth_shared_prefs.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,21 +23,52 @@ class _LoginScreenState extends State<LoginScreen> {
   static const Color _fieldBorder = Color(0xFF2A2A30);
   static const Color _hintColor = Color(0xFF6B6B72);
   static const Color _accentOrange = Color(0xFFD98E4A);
+  static const Color _primaryOrange = Color(0xFFFF6A1A);
+
+  @override
+  void initState() {
+    super.initState();
+    // FIX: dengerin perubahan teks biar tombol Login bisa ganti warna
+    // real-time pas email & password valid.
+    _emailController.addListener(_onCredentialsChanged);
+    _passwordController.addListener(_onCredentialsChanged);
+  }
 
   @override
   void dispose() {
+    _emailController.removeListener(_onCredentialsChanged);
+    _passwordController.removeListener(_onCredentialsChanged);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _handleLogin() {
-    final email = _user.where((user) => user.email == _emailController.text);
-    final password = _user.where(
-      (user) => user.password == _passwordController.text,
+  bool get _isValidCredential {
+    return _user.any(
+      (user) =>
+          user.email == _emailController.text &&
+          user.password == _passwordController.text,
+    );
+  }
+
+  void _onCredentialsChanged() => setState(() {});
+
+  void _handleLogin() async {
+    // Email DAN password harus cocok di user yang SAMA (bukan dicek terpisah).
+    final matchedUsers = _user.where(
+      (user) =>
+          user.email == _emailController.text &&
+          user.password == _passwordController.text,
     );
 
-    if (email.isNotEmpty && password.isNotEmpty) {
+    if (matchedUsers.isNotEmpty) {
+      final user = matchedUsers.first;
+      Session.login(user);
+      
+      // Simpan status login & email secara persisten ke SharedPreferences
+      await AuthSharedPrefs.setLoggedIn(true, email: user.email);
+
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,18 +79,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // FIX GLITCH: sebelumnya pakai Center + SingleChildScrollView bareng-bareng.
+    // Kombinasi itu bikin layout "loncat" tiap keyboard muncul/hilang karena
+    // Center terus ngitung ulang posisi tengah sementara tinggi area yang
+    // tersedia berubah-ubah tiap keystroke. Sekarang cukup ListView biasa
+    // (otomatis scrollable, tanpa recentering yang bikin jitter).
     return Scaffold(
       backgroundColor: _background,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Stack(
+          children: [
+            ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
               children: [
                 const SizedBox(height: 40),
-
+    
                 // Logo + brand name
                 SvgPicture.asset(
                   'assets/icons/logo.svg',
@@ -80,10 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-
+    
                 const SizedBox(height: 48),
-
-                // Welcome text
+    
                 const Text(
                   'Welcome Back',
                   textAlign: TextAlign.center,
@@ -93,19 +129,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-
+    
                 const SizedBox(height: 36),
-
-                // Email field
+    
                 _buildTextField(
                   controller: _emailController,
                   hint: 'Email Address',
                   icon: Icons.mail_outline,
                 ),
-
+    
                 const SizedBox(height: 16),
-
-                // Password field
+    
                 _buildTextField(
                   controller: _passwordController,
                   hint: 'Password',
@@ -126,23 +160,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                 ),
-
+    
                 const SizedBox(height: 28),
-
-                // Login button
+    
+                // Login button — berubah oranye pas email & password yang lagi
+                // diketik cocok sama salah satu user yang valid.
                 SizedBox(
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _handleLogin();
-                    },
+                    onPressed: _handleLogin,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1C1C22),
-                      foregroundColor: Colors.white70,
+                      backgroundColor: _isValidCredential
+                          ? _primaryOrange
+                          : const Color(0xFF1C1C22),
+                      foregroundColor:
+                          _isValidCredential ? Colors.white : Colors.white70,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                        side: const BorderSide(color: _fieldBorder),
+                        side: BorderSide(
+                          color:
+                              _isValidCredential ? _primaryOrange : _fieldBorder,
+                        ),
                       ),
                     ),
                     child: const Text(
@@ -154,26 +193,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-
+    
                 const SizedBox(height: 20),
-
-                // Forgot password
+    
                 TextButton(
                   onPressed: () {
-                    // TODO: handle forgot password
                   },
                   child: const Text(
                     'Forgot Password?',
                     style: TextStyle(color: _hintColor, fontSize: 14),
                   ),
                 ),
-
+    
                 const SizedBox(height: 56),
-
-                // OR divider
+    
                 Row(
                   children: [
-                    Expanded(child: Divider(color: _fieldBorder, thickness: 1)),
+                    const Expanded(
+                        child: Divider(color: _fieldBorder, thickness: 1)),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
@@ -185,20 +222,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Expanded(child: Divider(color: _fieldBorder, thickness: 1)),
+                    const Expanded(
+                        child: Divider(color: _fieldBorder, thickness: 1)),
                   ],
                 ),
-
+    
                 const SizedBox(height: 24),
-
-                // Google / Apple buttons
+    
                 Row(
                   children: [
                     Expanded(
                       child: _buildSocialButton(
                         label: 'Google',
                         onPressed: () {
-                          // TODO: handle Google sign in
                         },
                       ),
                     ),
@@ -207,17 +243,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: _buildSocialButton(
                         label: 'Apple',
                         onPressed: () {
-                          // TODO: handle Apple sign in
                         },
                       ),
                     ),
                   ],
                 ),
-
+    
                 const SizedBox(height: 40),
               ],
             ),
-          ),
+            // ---------- BACK BUTTON ----------
+            IconButton(
+              padding: const EdgeInsets.all(16.0),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              tooltip: 'Kembali',
+            ),
+          ],
         ),
       ),
     );
