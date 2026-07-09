@@ -36,7 +36,7 @@ class _MyTicketScreenState extends State<MyTicketScreen> {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: Row(
                   children: [
@@ -58,16 +58,16 @@ class _MyTicketScreenState extends State<MyTicketScreen> {
             Expanded(
               child: tickets.isEmpty
                   ? Center(
-                      child: Text('Belum ada tiket',
-                          style: AppTextStyles.bodyMedium
-                              .copyWith(color: AppColors.textSecondary)),
-                    )
+                child: Text('Belum ada tiket',
+                    style: AppTextStyles.bodyMedium
+                        .copyWith(color: AppColors.textSecondary)),
+              )
                   : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      itemCount: tickets.length,
-                      itemBuilder: (context, index) =>
-                          _TicketTile(ticket: tickets[index]),
-                    ),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                itemCount: tickets.length,
+                itemBuilder: (context, index) =>
+                    _TicketTile(ticket: tickets[index]),
+              ),
             ),
           ],
         ),
@@ -97,7 +97,7 @@ class _TabButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isActive ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(26),
           ),
           alignment: Alignment.center,
           child: Text(
@@ -116,6 +116,10 @@ class _TabButton extends StatelessWidget {
 class _TicketTile extends StatelessWidget {
   final TicketModel ticket;
   const _TicketTile({required this.ticket});
+
+  // Width reserved on the right side of the tile for the torn-stub
+  // (dashed line + notches) visual.
+  static const double _stubWidth = 40;
 
   String _formatDate(DateTime date) {
     const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
@@ -137,41 +141,44 @@ class _TicketTile extends StatelessWidget {
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                ticket.posterUrl,
-                width: 56,
-                height: 72,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 56,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient:
-                        const LinearGradient(colors: AppColors.primaryGradient),
-                  ),
-                ),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              padding:
+              const EdgeInsets.fromLTRB(12, 12, 12 + _stubWidth, 12),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      ticket.posterUrl,
+                      width: 56,
+                      height: 72,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Container(
+                        width: 56,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: const LinearGradient(
+                              colors: AppColors.primaryGradient),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           ticket.movieTitle.toUpperCase(),
                           style: AppTextStyles.bodyLarge.copyWith(
                             color: isDone
@@ -180,38 +187,134 @@ class _TicketTile extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: AppColors.chipBackground,
-                          borderRadius: BorderRadius.circular(20),
+                        const SizedBox(height: 4),
+                        Text(ticket.cinemaName, style: AppTextStyles.bodyMedium),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${_formatDate(ticket.date)} • ${ticket.time} WIB',
+                          style: AppTextStyles.caption,
                         ),
-                        child: Text(ticket.format,
-                            style: AppTextStyles.captionSmall),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(ticket.cinemaName, style: AppTextStyles.bodyMedium),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${_formatDate(ticket.date)} • ${ticket.time} WIB',
-                    style: AppTextStyles.caption,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Jumlah ${ticket.ticketCount} Tiket',
-                    style: AppTextStyles.captionSmall
-                        .copyWith(color: AppColors.primary),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Jumlah: ${ticket.ticketCount} Tiket',
+                          style: AppTextStyles.captionSmall
+                              .copyWith(color: AppColors.primary),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
+            ),
+            // Dashed perforation line marking the ticket stub.
+            Positioned(
+              top: 12,
+              bottom: 12,
+              right: _stubWidth / 2,
+              child: CustomPaint(
+                size: const Size(1, double.infinity),
+                painter: _DashedLinePainter(
+                  horizontal: false,
+                  color: AppColors.background,
+                ),
+              ),
+            ),
+            // Format chip sits within the stub area, above the notch line.
+            Positioned(
+              top: 12,
+              right: (_stubWidth / 2) - 14,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.chipBackground,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(ticket.format, style: AppTextStyles.captionSmall),
+              ),
+            ),
+            // Top & bottom punch-hole notches, aligned with the dashed line.
+            Positioned(
+              top: -8,
+              right: (_stubWidth / 2) - 8,
+              child: const _Notch(),
+            ),
+            Positioned(
+              bottom: -8,
+              right: (_stubWidth / 2) - 8,
+              child: const _Notch(),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+/// Small circle used to create the "punched hole" look of a ticket stub.
+/// Uses the page background color so it reads as a cutout against the tile.
+class _Notch extends StatelessWidget {
+  const _Notch();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 16,
+      height: 16,
+      decoration: const BoxDecoration(
+        color: AppColors.background,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+/// Paints a dashed line, either horizontal or vertical, filling the
+/// available size given by its parent.
+class _DashedLinePainter extends CustomPainter {
+  final bool horizontal;
+  final Color color;
+
+  static const double _dashHeight = 5;
+  static const double _dashSpace = 4;
+  static const double _strokeWidth = 1.4;
+
+  const _DashedLinePainter({
+    required this.horizontal,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = _strokeWidth;
+
+    double distance = 0;
+    if (horizontal) {
+      final y = size.height / 2;
+      while (distance < size.width) {
+        canvas.drawLine(
+          Offset(distance, y),
+          Offset(distance + _dashHeight, y),
+          paint,
+        );
+        distance += _dashHeight + _dashSpace;
+      }
+    } else {
+      final x = size.width / 2;
+      while (distance < size.height) {
+        canvas.drawLine(
+          Offset(x, distance),
+          Offset(x, distance + _dashHeight),
+          paint,
+        );
+        distance += _dashHeight + _dashSpace;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedLinePainter oldDelegate) {
+    return oldDelegate.color != color || oldDelegate.horizontal != horizontal;
   }
 }
