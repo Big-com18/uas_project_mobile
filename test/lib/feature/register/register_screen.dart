@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../data/app_data.dart';
-import '../../model/user.dart';
 
 /// ============================================================
 /// REGISTER SCREEN
@@ -17,10 +15,6 @@ import '../../model/user.dart';
 ///    menampilkan semua error saat baru mengetik di 1 field.
 /// 2. Tombol "Sign Up" abu-abu selama form belum valid semua, dan
 ///    berubah oranye otomatis begitu semua field terisi & valid.
-/// 3. FIX: user yang berhasil daftar sekarang BENERAN disimpan ke
-///    `userData`, jadi bisa langsung dipakai login sesudahnya. Sebelumnya
-///    dialog "Registration Successful" muncul tapi datanya nggak pernah
-///    disimpan, jadi login pasti gagal.
 /// ============================================================
 
 class RegisterScreen extends StatefulWidget {
@@ -269,41 +263,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (!_isFormValid) return;
 
-    // FIX #1: cek email udah kepake user lain atau belum, sebelum lanjut
-    // "daftar" — supaya nggak ada 2 akun beda dengan email yang sama.
-    final emailTaken = userData.any(
-      (u) =>
-          u.email.toLowerCase() ==
-          _emailController.text.trim().toLowerCase(),
-    );
-    if (emailTaken) {
-      setState(() {
-        _touched['email'] = true;
-        _errors['email'] = 'Email sudah terdaftar, coba login';
-      });
-      return;
-    }
-
     setState(() => _isLoading = true);
 
     // Simulasi proses register (ganti dengan pemanggilan API asli)
     await Future.delayed(const Duration(seconds: 2));
-
-    // FIX #2: INI BAGIAN UTAMA PENYEBAB ERORNYA.
-    // Sebelumnya user baru nggak pernah disimpan ke mana pun, jadi walaupun
-    // dialog "Registration Successful" muncul, akun itu nggak benar-benar
-    // ada — makanya login sesudahnya selalu gagal.
-    // Sekarang user baru ditambahin ke `userData` (sumber data yang sama
-    // yang dicek pas login di LoginScreen) supaya bisa langsung dipakai
-    // buat login begitu daftar.
-    userData.add(
-      UserModel(
-        name: _fullNameController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        phone: _phoneController.text.trim(),
-      ),
-    );
 
     setState(() => _isLoading = false);
 
