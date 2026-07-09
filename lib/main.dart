@@ -5,6 +5,7 @@ import 'theme/app_theme.dart';
 import 'model/order_model.dart';
 import 'model/ticket_model.dart';
 
+import 'feature/splashscreen/splash_screen.dart';
 import 'feature/onboarding/onboarding_screen.dart';
 import 'feature/login/login_screen.dart';
 import 'feature/register/register_screen.dart';
@@ -31,10 +32,11 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
 
       // ---------- ROUTER ----------
-      initialRoute: '/onboarding',
+      initialRoute: '/',
 
       // Route yang GAK butuh data / arguments cukup didaftarin di sini.
       routes: {
+        '/': (context) => const SplashScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/home': (context) => const MainNavScreen(),
         '/login': (context) => const LoginScreen(),
