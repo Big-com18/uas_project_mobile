@@ -43,20 +43,27 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
               Stack(
                 children: [
                   ClipRRect(
-                    child: Image.network(
-                      cinema.heroImageUrl ??
-                          'https://picsum.photos/seed/${cinema.id}/800/500',
-                      height: 190,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        height: 190,
-                        decoration: const BoxDecoration(
-                          gradient:
-                              LinearGradient(colors: AppColors.primaryGradient),
-                        ),
-                      ),
-                    ),
+                    child: cinema.heroImageUrl != null
+                        ? Image.asset(
+                            cinema.heroImageUrl!,
+                            height: 190,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 190,
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: AppColors.primaryGradient),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 190,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: AppColors.primaryGradient),
+                            ),
+                          ),
                   ),
                   Positioned(
                     top: 12,
@@ -113,8 +120,8 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: AppColors.chipBackground,
                         borderRadius: BorderRadius.circular(20),
@@ -142,7 +149,8 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
                                   size: 18, color: AppColors.textPrimary),
                             ),
                             const SizedBox(height: 6),
-                            Text(entry.value, style: AppTextStyles.captionSmall),
+                            Text(entry.value,
+                                style: AppTextStyles.captionSmall),
                           ],
                         );
                       }).toList(),
@@ -213,17 +221,18 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
                                   spacing: 6,
                                   children: movie.genres
                                       .map((g) => Container(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 8, vertical: 3),
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 3),
                                             decoration: BoxDecoration(
                                               color: AppColors.chipBackground,
                                               borderRadius:
                                                   BorderRadius.circular(20),
                                             ),
                                             child: Text(g,
-                                                style:
-                                                    AppTextStyles.captionSmall),
+                                                style: AppTextStyles
+                                                    .captionSmall),
                                           ))
                                       .toList(),
                                 ),

@@ -3,7 +3,6 @@ import '../../model/order_model.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widget/primary_button.dart';
-import 'payment_success_screen.dart';
 
 enum _PaymentOption { qris, eWallet, virtualAccount }
 

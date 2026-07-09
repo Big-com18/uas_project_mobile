@@ -8,7 +8,7 @@ final List<CinemaModel> dummyCinemas = [
     distanceKm: 2.5,
     rating: 4.8,
     facilities: ['IMAX', 'DOLBY', 'SNACK BAR', 'PARKING', 'WIFI'],
-    heroImageUrl: 'https://picsum.photos/seed/cinema1/800/500',
+    heroImageUrl: 'assets/images/cgv-grand-indonesia.jpg',
   ),
   const CinemaModel(
     id: 'cn-002',
@@ -18,7 +18,7 @@ final List<CinemaModel> dummyCinemas = [
     distanceKm: 3.8,
     rating: 4.6,
     facilities: ['IMAX', 'SNACK BAR', 'PARKING', 'WIFI'],
-    heroImageUrl: 'https://picsum.photos/seed/cinema2/800/500',
+    heroImageUrl: 'assets/images/cgv-pacific-place-jakarta.jpg',
   ),
   const CinemaModel(
     id: 'cn-003',
@@ -28,17 +28,17 @@ final List<CinemaModel> dummyCinemas = [
     distanceKm: 4.2,
     rating: 4.5,
     facilities: ['DOLBY', 'SNACK BAR', 'PARKING', 'WIFI'],
-    heroImageUrl: 'https://picsum.photos/seed/cinema3/800/500',
+    heroImageUrl: 'assets/images/cgv-plaza-senayan.jpg',
   ),
   const CinemaModel(
     id: 'cn-004',
-    name: 'Grand Indonesia CGV',
-    address: 'Jl. MH Thamrin No.1, Jakarta Pusat',
+    name: 'FX Sudirman CGV',
+    address: 'Jl. Jend. Sudirman No.Pintu 1 Senayan',
     city: 'Jakarta, ID',
-    distanceKm: 2.5,
-    rating: 4.8,
+    distanceKm: 3.0,
+    rating: 4.7,
     facilities: ['IMAX', '4DX', 'REGULAR'],
-    heroImageUrl: 'https://picsum.photos/seed/cinema4/800/500',
+    heroImageUrl: 'assets/images/cgv-sudirman.jpg',
   ),
 ];
 

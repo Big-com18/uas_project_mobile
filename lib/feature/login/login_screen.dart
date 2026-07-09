@@ -191,7 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
     
                 TextButton(
                   onPressed: () {
-                    // TODO: handle forgot password
                   },
                   child: const Text(
                     'Forgot Password?',
@@ -229,7 +228,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: _buildSocialButton(
                         label: 'Google',
                         onPressed: () {
-                          // TODO: handle Google sign in
                         },
                       ),
                     ),
@@ -238,7 +236,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: _buildSocialButton(
                         label: 'Apple',
                         onPressed: () {
-                          // TODO: handle Apple sign in
                         },
                       ),
                     ),
