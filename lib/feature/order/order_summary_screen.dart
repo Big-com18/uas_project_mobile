@@ -49,12 +49,19 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         leading: const BackButton(),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Ringkasan Pesanan', style: AppTextStyles.h1),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 20,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Ringkasan Pesanan', style: AppTextStyles.h1),
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -153,8 +160,12 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 label: 'Pilih Pembayaran',
                 onPressed: () => showPaymentMethodSheet(context, _order),
               ),
-            ],
-          ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

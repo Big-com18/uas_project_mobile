@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import '../../data/dummy_tickets.dart';
 import '../../model/order_model.dart';
+import '../../model/ticket_model.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widget/primary_button.dart';
 
-class PaymentSuccessScreen extends StatelessWidget {
+class PaymentSuccessScreen extends StatefulWidget {
   final OrderModel order;
   const PaymentSuccessScreen({super.key, required this.order});
+
+  @override
+  State<PaymentSuccessScreen> createState() => _PaymentSuccessScreenState();
+}
+
+class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
+  late final TicketModel _ticket;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tiket dibikin SEKALI di sini dari order yang beneran dipesan,
+    // langsung ditambahin ke dummyTickets biar otomatis muncul di
+    // My Ticket / history. Jadi baik user pencet "Lihat Tiket" ATAU
+    // langsung "Kembali ke Beranda", tiketnya tetap tercatat dan benar.
+    _ticket = ticketFromOrder(widget.order);
+    dummyTickets.insert(0, _ticket);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +64,10 @@ class PaymentSuccessScreen extends StatelessWidget {
                 height: 52,
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    // demo: pakai tiket dummy pertama sebagai contoh e-tiket
                     Navigator.pushNamed(
                       context,
                       '/e-ticket',
-                      arguments: dummyTickets.first,
+                      arguments: _ticket,
                     );
                   },
                   style: OutlinedButton.styleFrom(

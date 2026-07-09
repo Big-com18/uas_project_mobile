@@ -1,4 +1,28 @@
 import '../model/ticket_model.dart';
+import '../model/order_model.dart';
+
+/// Bikin TicketModel asli dari OrderModel hasil booking user,
+/// bukan data dummy statis. Dipanggil pas pembayaran berhasil.
+TicketModel ticketFromOrder(OrderModel order) {
+  final now = DateTime.now();
+  final id =
+      'TKT-${now.millisecondsSinceEpoch.toString().substring(5)}-${order.movieTitle.hashCode.abs() % 900 + 100}'
+          .toUpperCase();
+
+  return TicketModel(
+    id: id,
+    movieTitle: order.movieTitle,
+    posterUrl: order.posterUrl,
+    cinemaName: order.cinemaName,
+    studio: 'Studio 1', // dummy, backend nanti yang tentuin studio asli
+    seat: 'Free Seating', // dummy, ganti kalau ada fitur pilih kursi
+    format: order.format,
+    date: order.date,
+    time: order.time,
+    ticketCount: order.ticketCount,
+    status: TicketStatus.active,
+  );
+}
 
 final List<TicketModel> dummyTickets = [
   TicketModel(
