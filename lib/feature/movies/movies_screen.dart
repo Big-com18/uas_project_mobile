@@ -58,7 +58,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
           const SizedBox(height: 20),
           Expanded(
             child: GridView.builder(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
               itemCount: _filteredMovies.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
