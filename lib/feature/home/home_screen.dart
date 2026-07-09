@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../data/session.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -79,13 +81,23 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  width: 44,
-                  height: 44,
-                  decoration: const BoxDecoration(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
                     color: Color(0xFF1C1C28),
                     shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white10, width: 0.8),
                   ),
-                  child: const Icon(Icons.search, color: Colors.white, size: 20),
+                  padding: EdgeInsets.all(10),
+                  child: SvgPicture.asset(
+                    "assets/icons/search.svg",
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -106,7 +118,7 @@ class HomeScreen extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: _nowPlaying.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 14),
+                separatorBuilder: (_, _) => const SizedBox(width: 14),
                 itemBuilder: (context, index) {
                   final movie = _nowPlaying[index];
                   return _NowPlayingCard(
@@ -136,7 +148,7 @@ class HomeScreen extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: _comingSoon.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final movie = _comingSoon[index];
                   return _ComingSoonCard(
@@ -196,7 +208,7 @@ class _NowPlayingCard extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.black.withOpacity(0.85),
+                  Colors.black.withValues(alpha: 0.85),
                 ],
               ),
             ),
@@ -251,8 +263,11 @@ class _NowPlayingCard extends StatelessWidget {
     return Container(
       color: const Color(0xFF1C1C28),
       alignment: Alignment.center,
-      child: const Icon(Icons.movie_creation_outlined,
-          color: Colors.white24, size: 42),
+      child: const Icon(
+        Icons.movie_creation_outlined,
+        color: Colors.white24,
+        size: 42,
+      ),
     );
   }
 }
